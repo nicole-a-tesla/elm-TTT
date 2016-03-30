@@ -1,5 +1,8 @@
 sudo: false # force container-based infrastructure
 language: node_js
+cache:
+  directories:
+    - Tests/elm-stuff
 node_js:
   - "4.3"
 install:
