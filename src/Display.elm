@@ -26,11 +26,6 @@ header =
   style
     [("text-align", "center")]
 
-header : Attribute
-header =
-  style
-    [("text-align", "center")]
-
 
 
 view : Html
