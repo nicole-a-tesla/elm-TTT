@@ -12,7 +12,8 @@ tests =
   suite
     "Tic Tac Toe Tests"
     [ Tests.boardTests,
-      Tests.gameTests
+      Tests.gameTests,
+      Tests.displayTest
     ]
 
 port runner : Signal (Task.Task x ())

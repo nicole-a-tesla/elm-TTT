@@ -4,6 +4,7 @@ import ElmTest exposing (..)
 import Board exposing (..)
 import Game exposing (..)
 import DataTypes exposing(..)
+import Display exposing (..)
 
 emptyBoard : List Cell
 emptyBoard =
@@ -53,7 +54,20 @@ gameTests =
         "Test that Game updates on Move action"
         (assertEqual (Game.update (Move 0) testGame).board [X, Empty, Empty])
     , test
-        "Test that Game does not updates on NoOp action"
+        "Test that Game does not update on NoOp action"
         (assertEqual (Game.update (NoOp) testGame).board [Empty, Empty, Empty])
-
+    ]
+displayTest : Test
+displayTest =
+  suite
+    "Test for behavioral changes to display functions"
+    [ test
+        "Test converting Empty Cell to String"
+        (assertEqual (convertCellToString 0 Empty) "1")
+    , test
+        "Test converting X Cell to String"
+        (assertEqual (convertCellToString 0 X) "X")
+    , test
+        "Test converting O Cell to String"
+        (assertEqual (convertCellToString 0 O) "O")
     ]

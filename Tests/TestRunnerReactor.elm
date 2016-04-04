@@ -1,9 +1,6 @@
 module Main (..) where
 
-import Console
 import ElmTest exposing (..)
-import Signal exposing (Signal)
-import Task
 import Tests
 
 
@@ -12,7 +9,8 @@ main =
     <| suite
       "Tic Tac Toe Tests"
       [ Tests.boardTests,
-        Tests.gameTests
+        Tests.gameTests,
+        Tests.displayTest
       ]
 
 
