@@ -2,46 +2,45 @@ module Display (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Mouse
+import Html.Events exposing (..)
+import Signal exposing (Signal, Address)
 
-cell : Attribute
-cell =
+import Board exposing (..)
+import DataTypes exposing (..)
+import Mailbox exposing (..)
+
+
+cellStyle : Attribute
+cellStyle =
   style
     [("margin", "10px")
     , ("width", "30%")
     , ("height", "200px")
-    , ("text-align", "center")
-    , ("-webkit-user-select", "none")
-    , ("user-select", "none")
     , ("font-size", "6em")
-    , ("border-radius", "0")
-    , ("-webkit-appearance", "none")
-    , ("padding", "0px")
+    , ("border-radius", "50")
     , ("background", "white")
-    , ("border", "2px solid #4A4A4A"),
-      ("display", "inline-block")]
+    , ("border", "2px solid #4A4A4A")]
 
 header : Attribute
 header =
   style
     [("text-align", "center")]
 
+getCell : Int -> Cell -> Html
+getCell index cell =
+  let
+    content =
+      case cell of
+        Empty -> toString (index + 1)
+        _ -> toString cell
+  in
+    button [cellStyle, onClick actions.address (Move index)] [text content]
 
-
-view : Html
-view =
+view : Address Action -> Game -> Html
+view address game =
   div [] [
-    h1 [header] [ Html.text "Welcome to Tic Tac Toe"],
-    div [cell] [],
-    div [cell] [],
-    div [cell] [],
-    div [cell] [],
-    div [cell] [],
-    div [cell] [],
-    div [cell] [],
-    div [cell] [],
-    div [cell] []
+    h1 [header] [ text "Welcome to Tic Tac Toe"],
+    div [] (List.indexedMap getCell game.board)
   ]
 
-main =
-  view
+

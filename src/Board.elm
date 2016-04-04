@@ -1,21 +1,15 @@
 module Board where
+
 import Dict exposing (..)
 
-type Cell
-  = X
-  | O
-  | Empty
+import DataTypes exposing (..)
 
-type Player
-  = Human
-  | Computer
-
-newBoard : Dict number Cell
+newBoard : List Cell
 newBoard =
-  fromList ([ (1,Empty), (2,Empty), (3,Empty)
-            , (4,Empty), (5,Empty), (6,Empty)
-            , (7,Empty), (8,Empty), (9,Empty)
-            ] )
+  [ Empty, Empty, Empty
+  , Empty, Empty, Empty
+  , Empty, Empty, Empty
+  ]
 
 getSymbol : Player -> Cell
 getSymbol player =
@@ -23,6 +17,8 @@ getSymbol player =
     Human -> X
     Computer -> O
 
-update : Dict comparable Cell -> comparable -> Player -> Dict comparable Cell
-update board index player =
-  Dict.insert index (getSymbol player) board
+update : List Cell -> Int -> Player -> List Cell
+update board desiredIndex player =
+  List.indexedMap
+    (\currentIndex cell ->
+      if desiredIndex == currentIndex then (getSymbol player) else cell) board
