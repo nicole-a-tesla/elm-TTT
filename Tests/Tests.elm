@@ -110,6 +110,13 @@ testGame =
     winner = Empty
   }
 
+nextMoveWinsGame : Game
+nextMoveWinsGame =
+  {
+    board = test3x3Board,
+    winner = Empty
+  }
+
 boardTests : Test
 boardTests =
   suite
@@ -206,10 +213,13 @@ boardTests =
         (assertEqual all4x4Lists (Board.gatherBoardLists winner4x4Board))
     , test
         "Return Winner"
-        (assertEqual "X" (Board.checkWinner winner4x4Board))
+        (assertEqual X (Board.checkWinner winner4x4Board))
+    , test
+        "Return Winner"
+        (assertEqual X (Board.checkWinner winner3x3Board))
     , test
         "Return Empty if no Winner"
-        (assertEqual "Empty" (Board.checkWinner empty3x3Board))
+        (assertEqual Empty (Board.checkWinner empty3x3Board))
 
     ]
 
@@ -230,8 +240,14 @@ gameTests =
                                       , [Empty, Empty, Empty]
                                       ])
     , test
-        "Test that Game updates on Move action"
-        (assertEqual (Game.update (Move 0 0) testGame).board [[X, Empty, Empty], [Empty, Empty, Empty], [Empty, Empty, Empty]])
+        "Test that Game updates board on Move action"
+        (assertEqual [[X, Empty, Empty],
+                      [Empty, Empty, Empty]
+                     ,[Empty, Empty, Empty]]
+                     (Game.update (Move 0 0) testGame).board )
+    , test
+        "Test that Game updates winner on winning move"
+        (assertEqual X (Game.update (Move 0 0) nextMoveWinsGame).winner)
     , test
         "Test that Game does not update on NoOp action"
         (assertEqual empty3x3Board (Game.update (NoOp) testGame).board)

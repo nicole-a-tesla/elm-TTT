@@ -28,14 +28,13 @@ checkListForWin : List Cell -> Bool
 checkListForWin list =
   (listIsUniform list) && not (empty list)
 
-checkWinner : List (List Cell) -> String
+checkWinner : List (List Cell) -> Cell
 checkWinner board =
    List.filter checkListForWin (gatherBoardLists board)
    |> List.head
    |> Maybe.withDefault []
    |> List.head
    |> Maybe.withDefault Empty
-   |> toString
 
 getRow : List (List Cell) -> Int -> List Cell
 getRow board row =
