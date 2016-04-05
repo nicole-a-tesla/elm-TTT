@@ -76,7 +76,10 @@ boardTests =
       (assertEqual ([X, O, X])(Board.getColumn test3x3Board 1))
     , test
       "Get Diagonal from 3x3 Board"
-      (assertEqual ([Empty, O, Empty])(Board.getDiagonal test3x3Board 1))
+      (assertEqual ([Empty, O, Empty])(Board.getDiagonal test3x3Board))
+    --, test
+    --  "Get Anti-Diagonal from 3x3 Board"
+    --  (assertEqual ([Empty, O, Empty])(Board.getAntiDiagonal test3x3Board 1))
     , test
       "Get Row from 4x4 Board"
       (assertEqual ([Empty, X, Empty, Empty])(Board.getRow test4x4Board 0))
@@ -85,7 +88,7 @@ boardTests =
       (assertEqual ([X, O, X, O])(Board.getColumn test4x4Board 1))
     , test
       "Get Diagonal from 4x4 Board"
-      (assertEqual ([Empty,O,Empty,Empty])(Board.getDiagonal test4x4Board 1))
+      (assertEqual ([Empty,O,Empty,Empty])(Board.getDiagonal test4x4Board))
     , test
       "Update board with x in 1"
       (assertEqual [[ X, Empty], [Empty, Empty]] (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 Human))

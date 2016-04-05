@@ -35,8 +35,8 @@ getColumn : List (List Cell) -> Int -> List Cell
 getColumn board column =
  List.map (\list -> Maybe.withDefault Empty <| extractFromList list column) board
 
-getDiagonal : List (List Cell) -> Int -> List Cell
-getDiagonal board column =
+getDiagonal : List (List Cell) -> List Cell
+getDiagonal board =
  List.indexedMap (\index list -> Maybe.withDefault Empty <| extractFromList list index) board
 
 extractFromList : List a -> Int -> Maybe a
