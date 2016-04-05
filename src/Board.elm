@@ -39,6 +39,10 @@ getDiagonal : List (List Cell) -> List Cell
 getDiagonal board =
  List.indexedMap (\index list -> Maybe.withDefault Empty <| extractFromList list index) board
 
+getAntiDiagonal : List (List Cell) -> List Cell
+getAntiDiagonal board =
+ getDiagonal <| List.map List.reverse board
+
 extractFromList : List a -> Int -> Maybe a
 extractFromList list desiredIndex =
   List.head <| List.drop desiredIndex list

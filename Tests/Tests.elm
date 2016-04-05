@@ -15,7 +15,7 @@ empty3x3Board =
 
 test3x3Board : List (List Cell)
 test3x3Board =
-  [ [Empty, X, Empty]
+  [ [Empty, X, X]
   , [Empty, O, Empty]
   , [Empty, X, Empty]
   ]
@@ -70,16 +70,16 @@ boardTests =
       (assertEqual ([[X, Empty], [Empty, Empty]])(Board.setNthItem [[Empty, Empty], [Empty, Empty]] 0 [X, Empty]))
     , test
       "Get Row from 3x3 Board"
-      (assertEqual ([Empty, X, Empty])(Board.getRow test3x3Board 0))
+      (assertEqual ([Empty, X, X])(Board.getRow test3x3Board 0))
     , test
       "Get Column from 3x3 Board"
       (assertEqual ([X, O, X])(Board.getColumn test3x3Board 1))
     , test
       "Get Diagonal from 3x3 Board"
       (assertEqual ([Empty, O, Empty])(Board.getDiagonal test3x3Board))
-    --, test
-    --  "Get Anti-Diagonal from 3x3 Board"
-    --  (assertEqual ([Empty, O, Empty])(Board.getAntiDiagonal test3x3Board 1))
+    , test
+      "Get Anti-Diagonal from 3x3 Board"
+      (assertEqual ([X, O, Empty])(Board.getAntiDiagonal test3x3Board))
     , test
       "Get Row from 4x4 Board"
       (assertEqual ([Empty, X, Empty, Empty])(Board.getRow test4x4Board 0))
@@ -89,6 +89,9 @@ boardTests =
     , test
       "Get Diagonal from 4x4 Board"
       (assertEqual ([Empty,O,Empty,Empty])(Board.getDiagonal test4x4Board))
+    , test
+      "Get Anti-Diagonal from 4x4 Board"
+      (assertEqual ([Empty,Empty,X,Empty])(Board.getAntiDiagonal test4x4Board))
     , test
       "Update board with x in 1"
       (assertEqual [[ X, Empty], [Empty, Empty]] (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 Human))
