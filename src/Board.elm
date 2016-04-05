@@ -2,6 +2,7 @@ module Board where
 
 import DataTypes exposing (..)
 import Array exposing (..)
+import Set
 newBoard : List (List Cell)
 newBoard =
   [ [Empty, Empty, Empty]
@@ -15,10 +16,20 @@ getSymbol player =
     Human -> X
     Computer -> O
 
+checkNumberOfUniqueSymbols : List Cell -> Int
+checkNumberOfUniqueSymbols list =
+  List.length <| Set.toList <| Set.fromList <| List.map toString list
+
+checkListForWin : List Cell -> String
+checkListForWin list =
+  if (checkNumberOfUniqueSymbols list) == 1 then
+     toString (Maybe.withDefault Empty (List.head list))  ++ " Wins"
+  else
+    "No Winner"
+
 getRow : List (List Cell) -> Int -> List Cell
 getRow board row =
   Maybe.withDefault [] <| get row <| fromList (board)
-
 
 extractFromList : List a -> Int -> Maybe a
 extractFromList list desiredIndex =
