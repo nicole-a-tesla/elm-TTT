@@ -31,6 +31,14 @@ getRow : List (List Cell) -> Int -> List Cell
 getRow board row =
   Maybe.withDefault [] <| get row <| fromList (board)
 
+getColumn : List (List Cell) -> Int -> List Cell
+getColumn board column =
+ List.map (\list -> Maybe.withDefault Empty <| extractFromList list column) board
+
+getDiagonal : List (List Cell) -> Int -> List Cell
+getDiagonal board column =
+ List.indexedMap (\index list -> Maybe.withDefault Empty <| extractFromList list index) board
+
 extractFromList : List a -> Int -> Maybe a
 extractFromList list desiredIndex =
   List.head <| List.drop desiredIndex list

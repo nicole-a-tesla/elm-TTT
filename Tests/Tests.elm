@@ -6,16 +6,39 @@ import Game exposing (..)
 import DataTypes exposing(..)
 import Display exposing (..)
 
-emptyBoard : List (List Cell)
-emptyBoard =
+empty3x3Board : List (List Cell)
+empty3x3Board =
   [ [Empty, Empty, Empty]
   , [Empty, Empty, Empty]
   , [Empty, Empty, Empty]
   ]
 
+test3x3Board : List (List Cell)
+test3x3Board =
+  [ [Empty, X, Empty]
+  , [Empty, O, Empty]
+  , [Empty, X, Empty]
+  ]
+
+empty4x4Board : List (List Cell)
+empty4x4Board =
+  [ [Empty, Empty, Empty, Empty]
+  , [Empty, Empty, Empty, Empty]
+  , [Empty, Empty, Empty, Empty]
+  , [Empty, Empty, Empty, Empty]
+  ]
+
+test4x4Board : List (List Cell)
+test4x4Board =
+  [ [Empty, X, Empty, Empty]
+  , [Empty, O, Empty, Empty]
+  , [Empty, X, Empty, Empty]
+  , [Empty, O, Empty, Empty]
+  ]
+
 testGame : Game
 testGame =
-  {board = emptyBoard}
+  {board = empty3x3Board}
 
 boardTests : Test
 boardTests =
@@ -46,8 +69,23 @@ boardTests =
       "set nth item in list of lists"
       (assertEqual ([[X, Empty], [Empty, Empty]])(Board.setNthItem [[Empty, Empty], [Empty, Empty]] 0 [X, Empty]))
     , test
-      "Get Row from Board"
-      (assertEqual ([Empty, Empty, Empty])(Board.getRow emptyBoard 0))
+      "Get Row from 3x3 Board"
+      (assertEqual ([Empty, X, Empty])(Board.getRow test3x3Board 0))
+    , test
+      "Get Column from 3x3 Board"
+      (assertEqual ([X, O, X])(Board.getColumn test3x3Board 1))
+    , test
+      "Get Diagonal from 3x3 Board"
+      (assertEqual ([Empty, O, Empty])(Board.getDiagonal test3x3Board 1))
+    , test
+      "Get Row from 4x4 Board"
+      (assertEqual ([Empty, X, Empty, Empty])(Board.getRow test4x4Board 0))
+    , test
+      "Get Column from 4x4 Board"
+      (assertEqual ([X, O, X, O])(Board.getColumn test4x4Board 1))
+    , test
+      "Get Diagonal from 4x4 Board"
+      (assertEqual ([Empty,O,Empty,Empty])(Board.getDiagonal test4x4Board 1))
     , test
       "Update board with x in 1"
       (assertEqual [[ X, Empty], [Empty, Empty]] (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 Human))
@@ -84,7 +122,7 @@ gameTests =
         (assertEqual (Game.update (Move 0 0) testGame).board [[X, Empty, Empty], [Empty, Empty, Empty], [Empty, Empty, Empty]])
     , test
         "Test that Game does not update on NoOp action"
-        (assertEqual emptyBoard (Game.update (NoOp) testGame).board)
+        (assertEqual empty3x3Board (Game.update (NoOp) testGame).board)
     ]
 displayTest : Test
 displayTest =
