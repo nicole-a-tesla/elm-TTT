@@ -16,13 +16,17 @@ getSymbol player =
     Human -> X
     Computer -> O
 
-checkNumberOfUniqueSymbols : List Cell -> Int
-checkNumberOfUniqueSymbols list =
-  List.length <| Set.toList <| Set.fromList <| List.map toString list
+listIsUniform : List Cell -> Bool
+listIsUniform list =
+  (List.length <| Set.toList <| Set.fromList <| List.map toString list) == 1
+
+empty : List Cell -> Bool
+empty list =
+  (listIsUniform list) && List.member Empty list
 
 checkListForWin : List Cell -> String
 checkListForWin list =
-  if (checkNumberOfUniqueSymbols list) == 1 then
+  if (listIsUniform list) && not (empty list) then
      toString (Maybe.withDefault Empty (List.head list))  ++ " Wins"
   else
     "No Winner"

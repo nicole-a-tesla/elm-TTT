@@ -105,8 +105,17 @@ boardTests =
         "Check Row for No Winner"
         (assertEqual "No Winner" (Board.checkListForWin [O, Empty, O]))
     , test
-        "Check for 2 Unique Sybols"
-        (assertEqual 2 (Board.checkNumberOfUniqueSymbols [X, O, X]))
+        "Check Row for No Winner on Empty Board"
+        (assertEqual "No Winner" (Board.checkListForWin [Empty, Empty, Empty]))
+    , test
+        "Check if list is all the same symbol"
+        (assertEqual False (Board.listIsUniform [X, O, X]))
+    , test
+        "Check if list is not all Empty"
+        (assertEqual False (Board.empty [X, X, X]))
+    , test
+        "Check if list is all Empty"
+        (assertEqual True (Board.empty [Empty, Empty, Empty]))
 
     ]
 
