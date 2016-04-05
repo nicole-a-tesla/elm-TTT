@@ -33,6 +33,24 @@ winner3x3BoardColumns =
   , [X, O, O]
   ]
 
+winner3x3BoardDiagonals : List (List Cell)
+winner3x3BoardDiagonals =
+  [ [X, O, O]
+  , [X, O, Empty]
+  ]
+
+all3x3Lists : List (List Cell)
+all3x3Lists =
+  [ [X, X, X]
+  , [Empty, O, O]
+  , [Empty, X, O]
+  , [X, Empty, Empty]
+  , [X, O, X]
+  , [X, O, O]
+  , [X, O, O]
+  , [X, O, Empty]
+  ]
+
 empty4x4Board : List (List Cell)
 empty4x4Board =
   [ [Empty, Empty, Empty, Empty]
@@ -63,6 +81,26 @@ winner4x4BoardColumn =
   , [X, X, X, O]
   , [Empty, Empty, X, O]
   , [Empty, Empty, Empty, X]
+  ]
+
+winner4x4BoardDiagonals : List (List Cell)
+winner4x4BoardDiagonals =
+  [ [X, X, X, X]
+  , [Empty, Empty, X, O]
+  ]
+
+all4x4Lists : List (List Cell)
+all4x4Lists =
+  [ [X, X, Empty, Empty]
+  , [O, X, Empty, Empty]
+  , [O, X, X, Empty]
+  , [O, O, O, X]
+  , [X, O, O, O]
+  , [X, X, X, O]
+  , [Empty, Empty, X, O]
+  , [Empty, Empty, Empty, X]
+  , [X, X, X, X]
+  , [Empty, Empty, X, O]
   ]
 
 testGame : Game
@@ -151,6 +189,24 @@ boardTests =
     , test
         "Get all 4x4 Columns"
         (assertEqual winner4x4BoardColumn (Board.getAllColumns winner4x4Board))
+    , test
+        "Get both 3x3 Diagonals"
+        (assertEqual winner3x3BoardDiagonals (Board.getBothDiagonals winner3x3Board))
+    , test
+        "Get both 4x4 Diagonals"
+        (assertEqual winner4x4BoardDiagonals (Board.getBothDiagonals winner4x4Board))
+    , test
+        "Gather 3x3 board"
+        (assertEqual all3x3Lists (Board.gatherBoardLists winner3x3Board))
+    , test
+        "Gather 4x4 board"
+        (assertEqual all4x4Lists (Board.gatherBoardLists winner4x4Board))
+    , test
+        "Return Winner"
+        (assertEqual "X" (Board.checkWinner winner4x4Board))
+    , test
+        "Return Empty if no Winner"
+        (assertEqual "Empty" (Board.checkWinner empty3x3Board))
 
     ]
 

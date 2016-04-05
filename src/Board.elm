@@ -30,7 +30,12 @@ checkListForWin list =
 
 checkWinner : List (List Cell) -> String
 checkWinner board =
-  "hi"
+   List.filter checkListForWin (gatherBoardLists board)
+   |> List.head
+   |> Maybe.withDefault []
+   |> List.head
+   |> Maybe.withDefault Empty
+   |> toString
 
 getRow : List (List Cell) -> Int -> List Cell
 getRow board row =
@@ -51,6 +56,14 @@ getDiagonal board =
 getAntiDiagonal : List (List Cell) -> List Cell
 getAntiDiagonal board =
  getDiagonal <| List.map List.reverse board
+
+getBothDiagonals : List (List Cell) -> List (List Cell)
+getBothDiagonals board =
+ [(getDiagonal board), (getAntiDiagonal board)]
+
+gatherBoardLists : List (List Cell) -> List (List Cell)
+gatherBoardLists board =
+  List.concat [board, (getAllColumns board), (getBothDiagonals board)]
 
 extractFromList : List a -> Int -> Maybe a
 extractFromList list desiredIndex =
