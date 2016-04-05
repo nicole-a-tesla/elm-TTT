@@ -24,12 +24,13 @@ empty : List Cell -> Bool
 empty list =
   (listIsUniform list) && List.member Empty list
 
-checkListForWin : List Cell -> String
+checkListForWin : List Cell -> Bool
 checkListForWin list =
-  if (listIsUniform list) && not (empty list) then
-     toString (Maybe.withDefault Empty (List.head list))  ++ " Wins"
-  else
-    "No Winner"
+  (listIsUniform list) && not (empty list)
+
+checkWinner : List (List Cell) -> String
+checkWinner board =
+  "hi"
 
 getRow : List (List Cell) -> Int -> List Cell
 getRow board row =
@@ -38,6 +39,10 @@ getRow board row =
 getColumn : List (List Cell) -> Int -> List Cell
 getColumn board column =
  List.map (\list -> Maybe.withDefault Empty <| extractFromList list column) board
+
+getAllColumns : List (List Cell) -> List (List Cell)
+getAllColumns board =
+  List.indexedMap (\idx list -> getColumn board idx) board
 
 getDiagonal : List (List Cell) -> List Cell
 getDiagonal board =

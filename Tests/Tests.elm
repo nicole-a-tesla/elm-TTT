@@ -20,6 +20,19 @@ test3x3Board =
   , [Empty, X, Empty]
   ]
 
+winner3x3Board : List (List Cell)
+winner3x3Board =
+  [ [X, X, X]
+  , [Empty, O, O]
+  , [Empty, X, O]
+  ]
+winner3x3BoardColumns : List (List Cell)
+winner3x3BoardColumns =
+  [ [X, Empty, Empty]
+  , [X, O, X]
+  , [X, O, O]
+  ]
+
 empty4x4Board : List (List Cell)
 empty4x4Board =
   [ [Empty, Empty, Empty, Empty]
@@ -34,6 +47,22 @@ test4x4Board =
   , [Empty, O, Empty, Empty]
   , [Empty, X, Empty, Empty]
   , [Empty, O, Empty, Empty]
+  ]
+
+winner4x4Board : List (List Cell)
+winner4x4Board =
+  [ [X, X, Empty, Empty]
+  , [O, X, Empty, Empty]
+  , [O, X, X, Empty]
+  , [O, O, O, X]
+  ]
+
+winner4x4BoardColumn : List (List Cell)
+winner4x4BoardColumn =
+  [ [X, O, O, O]
+  , [X, X, X, O]
+  , [Empty, Empty, X, O]
+  , [Empty, Empty, Empty, X]
   ]
 
 testGame : Game
@@ -97,16 +126,16 @@ boardTests =
         (assertEqual [[ X, Empty], [Empty, Empty]] (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 Human))
     , test
         "Check Row for X Winner"
-        (assertEqual "X Wins" (Board.checkListForWin [X, X, X]))
+        (assertEqual True (Board.checkListForWin [X, X, X]))
     , test
         "Check Row for O Winner"
-        (assertEqual "O Wins" (Board.checkListForWin [O, O, O]))
+        (assertEqual True (Board.checkListForWin [O, O, O]))
     , test
         "Check Row for No Winner"
-        (assertEqual "No Winner" (Board.checkListForWin [O, Empty, O]))
+        (assertEqual False (Board.checkListForWin [O, Empty, O]))
     , test
         "Check Row for No Winner on Empty Board"
-        (assertEqual "No Winner" (Board.checkListForWin [Empty, Empty, Empty]))
+        (assertEqual False (Board.checkListForWin [Empty, Empty, Empty]))
     , test
         "Check if list is all the same symbol"
         (assertEqual False (Board.listIsUniform [X, O, X]))
@@ -116,6 +145,12 @@ boardTests =
     , test
         "Check if list is all Empty"
         (assertEqual True (Board.empty [Empty, Empty, Empty]))
+    , test
+        "Get all 3x3 Columns"
+        (assertEqual winner3x3BoardColumns (Board.getAllColumns winner3x3Board))
+    , test
+        "Get all 4x4 Columns"
+        (assertEqual winner4x4BoardColumn (Board.getAllColumns winner4x4Board))
 
     ]
 
