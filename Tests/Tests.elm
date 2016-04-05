@@ -4,10 +4,14 @@ import ElmTest exposing (..)
 import Board exposing (..)
 import Game exposing (..)
 import DataTypes exposing(..)
+import Display exposing (..)
 
-emptyBoard : List Cell
+emptyBoard : List (List Cell)
 emptyBoard =
-  [ Empty, Empty, Empty]
+  [ [Empty, Empty, Empty]
+  , [Empty, Empty, Empty]
+  , [Empty, Empty, Empty]
+  ]
 
 testGame : Game
 testGame =
@@ -22,10 +26,7 @@ boardTests =
         (assert (1 == 1))
     , test
         "New Board is Empty"
-        (assertEqual Board.newBoard [ Empty, Empty, Empty
-                                    , Empty, Empty, Empty
-                                    , Empty, Empty, Empty
-                                    ] )
+        (assertEqual Board.newBoard [ [Empty, Empty, Empty], [Empty, Empty, Empty], [Empty, Empty, Empty]] )
     , test
       "Return X for Human"
       (assertEqual (Board.getSymbol Human) X)
@@ -33,9 +34,26 @@ boardTests =
       "Return O for Computer"
       (assertEqual (Board.getSymbol Computer) O)
     , test
+      "Extract item from list"
+      (assertEqual  (Just [1,2,3]) (Board.extractFromList [[1,2,3],[4,5,6]] 0))
+    , test
+    "Extract another item from list"
+    (assertEqual (Just 1)(Board.extractFromList [1,2,3] 0))
+    , test
+    "set nth item in list"
+    (assertEqual ([X, Empty])(Board.setNthItem [Empty, Empty] 0 X))
+    , test
+      "set nth item in list of lists"
+      (assertEqual ([[X, Empty], [Empty, Empty]])(Board.setNthItem [[Empty, Empty], [Empty, Empty]] 0 [X, Empty]))
+    , test
+      "Get Row from Board"
+      (assertEqual ([Empty, Empty, Empty])(Board.getRow emptyBoard 0))
+    , test
       "Update board with x in 1"
-      (assertEqual (Board.update [ Empty, Empty] 0 Human)[ X, Empty])
+      (assertEqual [[ X, Empty], [Empty, Empty]] (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 Human))
+
     ]
+
 gameTests : Test
 gameTests =
   suite
@@ -45,15 +63,28 @@ gameTests =
         (assert (2 == 2))
     , test
         "Test that startgame has a new blank board"
-        (assertEqual startGame.board [ Empty, Empty, Empty
-                                      , Empty, Empty, Empty
-                                      , Empty, Empty, Empty
+        (assertEqual startGame.board [ [Empty, Empty, Empty]
+                                      , [Empty, Empty, Empty]
+                                      , [Empty, Empty, Empty]
                                       ])
     , test
         "Test that Game updates on Move action"
-        (assertEqual (Game.update (Move 0) testGame).board [X, Empty, Empty])
+        (assertEqual (Game.update (Move 0 0) testGame).board [[X, Empty, Empty], [Empty, Empty, Empty], [Empty, Empty, Empty]])
     , test
-        "Test that Game does not updates on NoOp action"
-        (assertEqual (Game.update (NoOp) testGame).board [Empty, Empty, Empty])
-
+        "Test that Game does not update on NoOp action"
+        (assertEqual emptyBoard (Game.update (NoOp) testGame).board)
+    ]
+displayTest : Test
+displayTest =
+  suite
+    "Test for behavioral changes to display functions"
+    [ test
+        "Test converting Empty Cell to String"
+        (assertEqual "5" (convertCellToString 4 Empty))
+    , test
+        "Test converting X Cell to String"
+        (assertEqual (convertCellToString 0 X) "X")
+    , test
+        "Test converting O Cell to String"
+        (assertEqual (convertCellToString 0 O) "O")
     ]

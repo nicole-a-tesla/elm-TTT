@@ -4,17 +4,9 @@ import Console
 import ElmTest exposing (..)
 import Signal exposing (Signal)
 import Task
-import Tests
+import TestGroup
 
-
-tests : Test
-tests =
-  suite
-    "Tic Tac Toe Tests"
-    [ Tests.boardTests,
-      Tests.gameTests
-    ]
 
 port runner : Signal (Task.Task x ())
 port runner =
-  Console.run (consoleRunner tests)
+  Console.run (consoleRunner TestGroup.tests)
