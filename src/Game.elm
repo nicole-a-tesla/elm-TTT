@@ -12,7 +12,8 @@ import Debug
 startGame : Game
 startGame =
   {
-    board = newBoard
+    board = newBoard,
+    winner = Empty
   }
 
 update : Action -> Game -> Game

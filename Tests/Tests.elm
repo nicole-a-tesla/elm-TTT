@@ -105,7 +105,10 @@ all4x4Lists =
 
 testGame : Game
 testGame =
-  {board = empty3x3Board}
+  {
+    board = empty3x3Board,
+    winner = Empty
+  }
 
 boardTests : Test
 boardTests =
@@ -218,6 +221,9 @@ gameTests =
         "== tests for equality"
         (assert (2 == 2))
     , test
+        "Test that startgame winner is Empty"
+        (assertEqual startGame.winner Empty)
+    , test
         "Test that startgame has a new blank board"
         (assertEqual startGame.board [ [Empty, Empty, Empty]
                                       , [Empty, Empty, Empty]
@@ -239,8 +245,17 @@ displayTest =
         (assertEqual "5" (convertCellToString 4 Empty))
     , test
         "Test converting X Cell to String"
-        (assertEqual (convertCellToString 0 X) "X")
+        (assertEqual "X" (convertCellToString 0 X))
     , test
         "Test converting O Cell to String"
-        (assertEqual (convertCellToString 0 O) "O")
+        (assertEqual "O" (convertCellToString 0 O))
+    , test
+        "Build Winner String X"
+        (assertEqual "X Wins" (buildWinnerString X))
+    , test
+        "Build Winner String O"
+        (assertEqual "O Wins" (buildWinnerString O))
+    , test
+        "Build no Winner String"
+        (assertEqual "" (buildWinnerString Empty))
     ]
