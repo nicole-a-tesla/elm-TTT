@@ -37,13 +37,13 @@ createCellButton index cell =
   let
     content = convertCellToString index cell
   in
-    button [cellStyle, onClick actions.address (Move index)] [text content]
+    button [cellStyle, onClick actions.address (Move (index//boardSize)(index % boardSize))] [text content]
 
 view : Address Action -> Game -> Html
 view address game =
   div [] [
     h1 [header] [ text "Welcome to Tic Tac Toe"],
-    div [] (List.indexedMap createCellButton game.board)
+    div [] (List.indexedMap createCellButton (List.concat game.board))
   ]
 
 

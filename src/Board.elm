@@ -1,14 +1,12 @@
 module Board where
 
-import Dict exposing (..)
-
 import DataTypes exposing (..)
-
-newBoard : List Cell
+import Array exposing (..)
+newBoard : List (List Cell)
 newBoard =
-  [ Empty, Empty, Empty
-  , Empty, Empty, Empty
-  , Empty, Empty, Empty
+  [ [Empty, Empty, Empty]
+  , [Empty, Empty, Empty]
+  , [Empty, Empty, Empty]
   ]
 
 getSymbol : Player -> Cell
@@ -17,8 +15,19 @@ getSymbol player =
     Human -> X
     Computer -> O
 
-update : List Cell -> Int -> Player -> List Cell
-update board desiredIndex player =
-  List.indexedMap
-    (\currentIndex cell ->
-      if desiredIndex == currentIndex then (getSymbol player) else cell) board
+getRow : List (List Cell) -> Int -> List Cell
+getRow board row =
+  Maybe.withDefault [] <| get row <| fromList (board)
+
+
+extractFromList : List a -> Int -> Maybe a
+extractFromList list desiredIndex =
+  List.head <| List.drop desiredIndex list
+
+setNthItem : List a -> Int  -> a  -> List a
+setNthItem list index value=
+  toList <| set index value (fromList list)
+
+update : List (List Cell) -> Int -> Int -> Player -> List (List Cell)
+update board row column player =
+  setNthItem board row (setNthItem (getRow board row) column (getSymbol player))

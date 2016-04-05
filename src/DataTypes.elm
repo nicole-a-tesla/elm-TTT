@@ -1,7 +1,9 @@
 module DataTypes where
 
 type alias Game =
-  { board: List Cell }
+  { board: List (List Cell) }
+
+boardSize = 3
 
 type Cell
   = X
@@ -12,4 +14,4 @@ type Player
   = Human
   | Computer
 
-type Action = NoOp | Move Int
+type Action = NoOp | Move Int Int

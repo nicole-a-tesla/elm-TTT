@@ -7,6 +7,7 @@ import Board exposing (..)
 import DataTypes exposing (..)
 import Display exposing (..)
 import Mailbox exposing (..)
+import Debug
 
 startGame : Game
 startGame =
@@ -18,8 +19,8 @@ update : Action -> Game -> Game
 update action game =
   case action of
     NoOp -> game
-    Move id ->
-      { game | board = Board.update game.board id Human }
+    Move row column ->
+      { game | board = Board.update game.board row column Human }
 
 model : Signal Game
 model =
