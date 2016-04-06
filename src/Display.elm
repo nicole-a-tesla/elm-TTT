@@ -32,6 +32,12 @@ convertCellToString index cell =
     Empty -> toString (index + 1)
     _ -> toString cell
 
+buildWinnerString : Cell -> String
+buildWinnerString cell =
+  case cell of
+    Empty -> ""
+    _ -> (toString cell) ++ " Wins"
+
 createCellButton : Int -> Cell -> Html
 createCellButton index cell =
   let
@@ -43,7 +49,8 @@ view : Address Action -> Game -> Html
 view address game =
   div [] [
     h1 [header] [ text "Welcome to Tic Tac Toe"],
-    div [] (List.indexedMap createCellButton (List.concat game.board))
+    div [] (List.indexedMap createCellButton (List.concat game.board)),
+    h1 [header] [text (buildWinnerString game.winner)]
   ]
 
 

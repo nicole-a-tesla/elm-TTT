@@ -12,15 +12,24 @@ import Debug
 startGame : Game
 startGame =
   {
-    board = newBoard
+    board = newBoard,
+    winner = Empty
   }
+updateGameBoard : Game -> Int -> Int -> Game
+updateGameBoard game row column =
+  { game | board = Board.update game.board row column Human}
+
+updateWinnerStatus : Game -> Game
+updateWinnerStatus game  =
+  {game | winner = checkWinner game.board}
 
 update : Action -> Game -> Game
 update action game =
   case action of
     NoOp -> game
     Move row column ->
-      { game | board = Board.update game.board row column Human }
+      updateGameBoard game row column
+        |> updateWinnerStatus
 
 model : Signal Game
 model =

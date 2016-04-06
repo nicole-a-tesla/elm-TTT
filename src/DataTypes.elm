@@ -1,7 +1,10 @@
 module DataTypes where
 
 type alias Game =
-  { board: List (List Cell) }
+  {
+    board: List (List Cell),
+    winner: Cell
+  }
 
 boardSize = 3
 
