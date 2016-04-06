@@ -1,10 +1,12 @@
 module Tests (..) where
 
 import ElmTest exposing (..)
+import Dict exposing (..)
 import Board exposing (..)
 import Game exposing (..)
 import DataTypes exposing(..)
 import Display exposing (..)
+import Ai exposing (..)
 
 empty3x3Board : List (List Cell)
 empty3x3Board =
@@ -26,6 +28,14 @@ winner3x3Board =
   , [Empty, O, O]
   , [Empty, X, O]
   ]
+
+oWins3x3Board : List (List Cell)
+oWins3x3Board =
+  [ [X, X, O]
+  , [Empty, O, O]
+  , [Empty, X, O]
+  ]
+
 winner3x3BoardColumns : List (List Cell)
 winner3x3BoardColumns =
   [ [X, Empty, Empty]
@@ -116,6 +126,9 @@ nextMoveWinsGame =
     board = test3x3Board,
     winner = Empty
   }
+
+testScores : List ( number, number' )
+testScores = [ ( 0, 10 ), ( 1, -10 ) ]
 
 boardTests : Test
 boardTests =
@@ -275,3 +288,40 @@ displayTest =
         "Build no Winner String"
         (assertEqual "" (buildWinnerString Empty))
     ]
+
+aiTest : Test
+aiTest =
+  suite
+  "Test Ai"
+  [ test
+      "scoreBoard returns 10 for current marker win"
+      (assertEqual 10 (scoreBoard oWins3x3Board))
+
+  , test
+    "scoreBoard returns -10 for opponent marker win"
+    (assertEqual -10 (scoreBoard winner3x3Board))
+
+  , test
+    "scoreBoard returns 0 for non-winning board"
+    (assertEqual 0 (scoreBoard test3x3Board))
+
+  , test
+    "selects max scoring cell if currentMarker is computer marker"
+    (assertEqual (Just 0) (getMinOrMax (Dict.fromList testScores) DataTypes.O))
+
+  , test
+    "selects min scoring cell if currentMarker is opponent marker"
+    (assertEqual (Just 1) (getMinOrMax (Dict.fromList testScores) DataTypes.X))
+
+  , test
+    "getMaxValue gets max"
+    (assertEqual (Just 10) (getMaxValue (Dict.fromList testScores)))
+
+  , test
+    "getMinValue gets max"
+    (assertEqual (Just -10) (getMinValue (Dict.fromList testScores)))
+
+  , test
+    "getValuesKey gets the value of its key"
+    (assertEqual (Just 0) (getValuesKey (Dict.fromList testScores) (Just 10)))
+  ]

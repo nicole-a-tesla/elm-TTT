@@ -9,5 +9,6 @@ tests =
     "Tic Tac Toe Tests"
     [ Tests.boardTests,
       Tests.gameTests,
-      Tests.displayTest
+      Tests.displayTest,
+      Tests.aiTest
     ]
