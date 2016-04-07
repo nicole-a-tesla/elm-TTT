@@ -4,6 +4,7 @@ import DataTypes exposing (..)
 import Board exposing (..)
 import Dict exposing (..)
 import Maybe exposing (..)
+import List  exposing (..)
 
 scoreBoard : List (List Cell) -> number
 
@@ -32,3 +33,23 @@ getMinValue : Dict comparable comparable -> Maybe comparable
 getMinValue scores =
   List.minimum <| Dict.values <| scores
 
+minimaxMove : List (List Cell) -> number
+minimaxMove board =
+  -- TEMP VALUE
+  8
+
+flattenBoard : List (List Cell) -> List Cell
+flattenBoard board =
+  List.concat(board)
+
+getEmptySpaces flatBoard =
+  let
+    indexed = indexedTuples(flatBoard)
+    filtered = List.filter (\elem -> (snd elem == Empty)) indexed
+    unzipped = List.unzip(filtered)
+  in
+  fst unzipped
+
+indexedTuples : List a -> List (Int, a)
+indexedTuples inputList =
+  List.indexedMap (,) inputList

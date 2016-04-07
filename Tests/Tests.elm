@@ -128,7 +128,7 @@ nextMoveWinsGame =
   }
 
 testScores : List ( number, number' )
-testScores = [ ( 0, 10 ), ( 1, -10 ) ]
+testScores = [ ( 0, 10 ), ( 1, -10 ), (2, 0) ]
 
 boardTests : Test
 boardTests =
@@ -289,6 +289,14 @@ displayTest =
         (assertEqual "" (buildWinnerString Empty))
     ]
 
+
+nearWin : List (List Cell)
+nearWin =
+  [ [Empty, Empty, O]
+  , [Empty, Empty, O]
+  , [Empty, Empty, Empty]
+  ]
+
 aiTest : Test
 aiTest =
   suite
@@ -324,4 +332,22 @@ aiTest =
   , test
     "getValuesKey gets the value of its key"
     (assertEqual (Just 0) (getValuesKey (Dict.fromList testScores) (Just 10)))
+
+  , test
+    "minimaxMove chooses winning move"
+    (assertEqual 8 (minimaxMove nearWin))
+
+  , test
+    "emptySpaces returns empty spaces"
+    (assertEqual [0, 1, 3, 4, 6, 7, 8] (getEmptySpaces(flattenBoard(nearWin))))
+
+  , test
+    "flatten-board flattens lists"
+    (assertEqual [X, X, O, Empty] (flattenBoard [[X, X], [O, Empty]]))
+
+  , test
+    "breaks it up be index"
+    (assertEqual [(0, "please"), (1, "no")]
+      (indexedTuples(["please", "no"])))
+
   ]
