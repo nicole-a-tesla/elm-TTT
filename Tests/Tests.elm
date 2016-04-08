@@ -339,7 +339,7 @@ aiTest =
 
   , test
     "emptySpaces returns empty spaces"
-    (assertEqual [0, 1, 3, 4, 6, 7, 8] (getEmptySpaces(flattenBoard(nearWin))))
+    (assertEqual [0, 1, 3, 4, 6, 7, 8] (getEmptySpaces(nearWin)))
 
   , test
     "flatten-board flattens lists"
@@ -348,6 +348,6 @@ aiTest =
   , test
     "breaks it up be index"
     (assertEqual [(0, "please"), (1, "no")]
-      (indexedTuples(["please", "no"])))
+      (indexedElements(["please", "no"])))
 
   ]
