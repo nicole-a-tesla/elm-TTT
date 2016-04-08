@@ -184,7 +184,8 @@ boardTests =
         (assertEqual ([Empty,Empty,X,Empty])(Board.getAntiDiagonal test4x4Board))
     , test
         "Update board with x in 1"
-        (assertEqual [[ X, Empty], [Empty, Empty]] (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 Human))
+        (assertEqual [[ X, Empty], [Empty, Empty]]
+          (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 X))
     , test
         "Check Row for X Winner"
         (assertEqual True (Board.checkListForWin [X, X, X]))
@@ -248,7 +249,7 @@ gameTests =
         (assertEqual startGame.winner Empty)
     , test
         "Test that startgame has a new blank board"
-        (assertEqual startGame.board [ [Empty, Empty, Empty]
+        (assertEqual startGame.board [  [Empty, Empty, Empty]
                                       , [Empty, Empty, Empty]
                                       , [Empty, Empty, Empty]
                                       ])
@@ -265,6 +266,7 @@ gameTests =
         "Test that Game does not update on NoOp action"
         (assertEqual empty3x3Board (Game.update (NoOp) testGame).board)
     ]
+
 displayTest : Test
 displayTest =
   suite
@@ -297,21 +299,29 @@ nearWin =
   , [Empty, Empty, Empty]
   ]
 
-aiTest : Test
-aiTest =
+oneEmptySpace : List (List Cell)
+oneEmptySpace =
+  [ [O, X, O]
+  , [X, X, O]
+  , [O, O, Empty]
+  ]
+
+
+aiInfrastructureTest : Test
+aiInfrastructureTest =
   suite
-  "Test Ai"
+  "Test Ai Infrastructure"
   [ test
-      "scoreBoard returns 10 for current marker win"
-      (assertEqual 10 (scoreBoard oWins3x3Board))
+      "getScore returns 10 for current marker win"
+      (assertEqual 10 (getScore oWins3x3Board))
 
   , test
-    "scoreBoard returns -10 for opponent marker win"
-    (assertEqual -10 (scoreBoard winner3x3Board))
+    "getScore returns -10 for opponent marker win"
+    (assertEqual -10 (getScore winner3x3Board))
 
   , test
-    "scoreBoard returns 0 for non-winning board"
-    (assertEqual 0 (scoreBoard test3x3Board))
+    "getScore returns 0 for non-winning board"
+    (assertEqual 0 (getScore test3x3Board))
 
   , test
     "selects max scoring cell if currentMarker is computer marker"
@@ -334,12 +344,21 @@ aiTest =
     (assertEqual (Just 0) (getValuesKey (Dict.fromList testScores) (Just 10)))
 
   , test
-    "minimaxMove chooses winning move"
-    (assertEqual 8 (minimaxMove nearWin))
+    "emptySpaces returns empty spaces - nearly full board"
+    (assertEqual [{x=2, y=2}] (getEmptySpacesInBoard(oneEmptySpace)))
+
 
   , test
-    "emptySpaces returns empty spaces"
-    (assertEqual [0, 1, 3, 4, 6, 7, 8] (getEmptySpaces(nearWin)))
+    "emptySpaces returns empty spaces - nearly empty board"
+    (assertEqual [{x=0, y=0}, {x=0, y=1},
+                  {x=1, y=0}, {x=1, y=1},
+                  {x=2, y=0}, {x=2, y=1}, {x=2, y=2}]
+      (getEmptySpacesInBoard(nearWin)))
+
+
+  , test
+    "emptySpacesRow returns empty spaces"
+    (assertEqual [{x=0, y=1}, {x=0, y=2}] (getEmptySpacesInRow((0, [X, Empty, Empty]))))
 
   , test
     "flatten-board flattens lists"
@@ -350,4 +369,23 @@ aiTest =
     (assertEqual [(0, "please"), (1, "no")]
       (indexedElements(["please", "no"])))
 
+  ]
+
+nearWinGameState =
+  { board = nearWin,
+    activePlayer = O,
+    inactivePlayer = X }
+
+oneEmptySpaceState =
+  { board = oneEmptySpace,
+    activePlayer = O,
+    inactivePlayer = X }
+
+minimaxTest : Test
+minimaxTest =
+  suite
+  "Test Minimax"
+  [ test
+    "wins on next move if possible"
+    (assertEqual 8 (minimaxMove nearWinGameState))
   ]

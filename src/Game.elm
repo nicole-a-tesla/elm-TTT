@@ -17,7 +17,7 @@ startGame =
   }
 updateGameBoard : Game -> Int -> Int -> Game
 updateGameBoard game row column =
-  { game | board = Board.update game.board row column Human}
+  { game | board = Board.update game.board row column X}
 
 updateWinnerStatus : Game -> Game
 updateWinnerStatus game  =

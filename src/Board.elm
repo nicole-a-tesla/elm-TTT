@@ -72,6 +72,6 @@ setNthItem : List a -> Int  -> a  -> List a
 setNthItem list index value=
   toList <| set index value (fromList list)
 
-update : List (List Cell) -> Int -> Int -> Player -> List (List Cell)
-update board row column player =
-  setNthItem board row (setNthItem (getRow board row) column (getSymbol player))
+update : List (List Cell) -> Int -> Int -> Cell -> List (List Cell)
+update board row column marker =
+  setNthItem board row (setNthItem (getRow board row) column marker)

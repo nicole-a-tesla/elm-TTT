@@ -12,13 +12,19 @@ computerMarker = DataTypes.O
 opponentMarker : Cell
 opponentMarker = DataTypes.X
 
-scoreBoard : List (List Cell) -> number
-scoreBoard board =
+type alias GameState =
+  {board : List (List Cell),
+   activePlayer : Cell,
+   inactivePlayer : Cell }
+
+getScore : List (List Cell) -> number
+getScore board =
   if (checkWinner board == computerMarker)
     then 10
   else if (checkWinner board == opponentMarker)
     then-10
   else 0
+
 
 getMinOrMax : Dict comparable number -> Cell -> Maybe number
 getMinOrMax scores currentMarker =
@@ -38,20 +44,27 @@ getMinValue : Dict comparable comparable -> Maybe comparable
 getMinValue scores =
   scores |> Dict.values |> List.minimum
 
-minimaxMove : List (List Cell) -> number
-minimaxMove board =
-  -- TEMP VALUE
+minimaxMove : GameState -> number
+minimaxMove gameState =
+  -- temp value
   8
 
 flattenBoard : List (List Cell) -> List Cell
 flattenBoard board =
   List.concat(board)
 
-getEmptySpaces board =
+getEmptySpacesInBoard board =
   let
-    indexedEmptyCells = flattenBoard(board) |> indexedElements |> List.filter (\elem -> (snd elem == Empty))
+    indexedRows = indexedElements(board)
   in
-    indexedEmptyCells |> List.unzip |> fst
+    concat (List.map (\row -> getEmptySpacesInRow(row)) indexedRows)
+
+getEmptySpacesInRow rowTuple =
+  let
+    xVal = fst rowTuple
+    emptySpaces = indexedElements(snd rowTuple) |> List.filter (\elem -> (snd elem == Empty))
+  in
+    List.map (\indexedPair -> {x=xVal, y=(fst indexedPair)}) emptySpaces
 
 indexedElements : List a -> List (Int, a)
 indexedElements inputList =

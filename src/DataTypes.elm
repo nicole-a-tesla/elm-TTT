@@ -6,6 +6,10 @@ type alias Game =
     winner: Cell
   }
 
+type alias Coords =
+  { x: Int,
+    y: Int }
+
 boardSize = 3
 
 type Cell
@@ -18,3 +22,4 @@ type Player
   | Computer
 
 type Action = NoOp | Move Int Int
+

@@ -10,5 +10,6 @@ tests =
     [ Tests.boardTests,
       Tests.gameTests,
       Tests.displayTest,
-      Tests.aiTest
+      Tests.aiInfrastructureTest,
+      Tests.minimaxTest
     ]
