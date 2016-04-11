@@ -17,7 +17,17 @@ startGame =
   }
 updateGameBoard : Game -> Int -> Int -> Game
 updateGameBoard game row column =
-  { game | board = Board.update game.board row column X}
+  let
+    gameState =
+      {board = game.board,
+       activePlayer = X,
+       inactivePlayer = O}
+
+    coordSet =
+      {x = row,
+       y = column}
+  in
+    { game | board = Board.update gameState coordSet}
 
 updateWinnerStatus : Game -> Game
 updateWinnerStatus game  =

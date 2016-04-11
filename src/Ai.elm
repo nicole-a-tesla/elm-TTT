@@ -12,11 +12,6 @@ computerMarker = DataTypes.O
 opponentMarker : Cell
 opponentMarker = DataTypes.X
 
-type alias GameState =
-  {board : List (List Cell),
-   activePlayer : Cell,
-   inactivePlayer : Cell }
-
 getScore : List (List Cell) -> number
 getScore board =
   if (checkWinner board == computerMarker)
@@ -33,19 +28,20 @@ scoreWholeBoard gameState scoresSoFar =
 
     [coordSet] ->
       let
-        newBoard = Board.update gameState.board coordSet.x coordSet.y gameState.activePlayer
+        newBoard = Board.update gameState coordSet
       in
         Dict.insert (coordSet.x, coordSet.y) (getScore newBoard) scoresSoFar
 
     coordSet::coordSets ->
-    let
-      newScoresSoFar = Dict.insert (coordSet.x, coordSet.y) (getScore gameState.board) scoresSoFar
-      newGameState =
-        { board = Board.update gameState.board coordSet.x coordSet.y gameState.activePlayer,
-          activePlayer = gameState.inactivePlayer,
-          inactivePlayer = gameState.activePlayer }
-    in
-      scoreWholeBoard newGameState newScoresSoFar
+      let
+        newScoresSoFar = Dict.insert (coordSet.x, coordSet.y) (getScore gameState.board) scoresSoFar
+
+        newGameState =
+          { board = Board.update gameState coordSet,
+            activePlayer = gameState.inactivePlayer,
+            inactivePlayer = gameState.activePlayer }
+      in
+        scoreWholeBoard newGameState newScoresSoFar
 
 getMinOrMax : Dict comparable number -> Cell -> Maybe number
 getMinOrMax scores currentMarker =

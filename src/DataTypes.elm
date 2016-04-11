@@ -6,6 +6,11 @@ type alias Game =
     winner: Cell
   }
 
+type alias GameState =
+  {board : List (List Cell),
+   activePlayer : Cell,
+   inactivePlayer : Cell }
+
 type alias Coords =
   { x: Int,
     y: Int }

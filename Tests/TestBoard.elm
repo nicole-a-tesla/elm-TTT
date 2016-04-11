@@ -5,6 +5,15 @@ import Board exposing (..)
 import DataTypes exposing (..)
 import BoardHelpers exposing (..)
 
+testGameState =
+    {board = [[Empty, Empty],[Empty, Empty]],
+     activePlayer = X,
+     inactivePlayer = O}
+
+testCoords =
+    {x = 0,
+     y = 0}
+
 boardTests : Test
 boardTests =
   suite
@@ -60,7 +69,8 @@ boardTests =
     , test
         "Update board with x in 1"
         (assertEqual [[ X, Empty], [Empty, Empty]]
-          (Board.update [[Empty, Empty],[Empty, Empty]] 0 0 X))
+          --(Board.update [[Empty, Empty],[Empty, Empty]] 0 0 X))
+          (Board.update testGameState testCoords))
     , test
         "Check Row for X Winner"
         (assertEqual True (Board.checkListForWin [X, X, X]))
