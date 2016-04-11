@@ -25,26 +25,27 @@ getScore board =
     then-10
   else 0
 
---scoreWholeBoard : GameState -> Dict ((Int, Int), number) -> Dict ((Int, Int), number)
---scoreWholeBoard gameState scoresSoFar =
---  let
---    availableSpaces = getEmptySpacesInBoard(gameState.board)
---  in
---    case availableSpaces of
---      [coordSet] ->
---        Dict.insert (coordSet.x, coordSet.y) (getScore(gameState.board)) scoresSoFar
---      coordSet::coordSets ->
---        let
---          newScoresSoFar = Dict.insert (coordSet.x, coordSet.y) (getScore(gameState.board)) scoresSoFar
---          newBoard = (Board.update(gameState.board, coordSet.x, coordSet.y, gameState.activePlayer))
---          newGameState =
---            { board = newBoard,
---              activePlayer = gameState.inactivePlayer,
---              inactivePlayer = gameState.activePlayer }
---        in
---          scoreWholeBoard(newGameState, newScoresSoFar)
+scoreWholeBoard : GameState -> Dict (Int, Int) number -> Dict (Int, Int) number
+scoreWholeBoard gameState scoresSoFar =
+  case getEmptySpacesInBoard(gameState.board) of
+    [] ->
+      Dict.empty
 
+    [coordSet] ->
+      let
+        newBoard = Board.update gameState.board coordSet.x coordSet.y gameState.activePlayer
+      in
+        Dict.insert (coordSet.x, coordSet.y) (getScore newBoard) scoresSoFar
 
+    coordSet::coordSets ->
+    let
+      newScoresSoFar = Dict.insert (coordSet.x, coordSet.y) (getScore gameState.board) scoresSoFar
+      newGameState =
+        { board = Board.update gameState.board coordSet.x coordSet.y gameState.activePlayer,
+          activePlayer = gameState.inactivePlayer,
+          inactivePlayer = gameState.activePlayer }
+    in
+      scoreWholeBoard newGameState newScoresSoFar
 
 getMinOrMax : Dict comparable number -> Cell -> Maybe number
 getMinOrMax scores currentMarker =
@@ -66,11 +67,7 @@ getMinValue scores =
 
 minimaxMove : GameState -> number
 minimaxMove gameState =
-  let
-    availableMoves = getEmptySpacesInBoard(gameState.board)
-    -- map aMoves -> getScore(board)
-    -- zip two lists into a dict? gethighest or lowest associated score
-  in
+  -- Temp val
   8
 
 flattenBoard : List (List Cell) -> List Cell
