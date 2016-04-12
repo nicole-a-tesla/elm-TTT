@@ -43,28 +43,31 @@ scoreWholeBoard gameState scoresSoFar =
       in
         scoreWholeBoard newGameState newScoresSoFar
 
-getMinOrMax : Dict comparable number -> Cell -> Maybe number
+getMinOrMax : Dict (Int, Int) comparable -> Cell -> Maybe (Int, Int)
 getMinOrMax scores currentMarker =
   if currentMarker == computerMarker
     then getValuesKey scores (getMaxValue scores)
   else getValuesKey scores (getMinValue scores)
 
-getValuesKey : Dict comparable comparable -> Maybe comparable -> Maybe comparable
+getValuesKey : Dict (Int, Int) comparable -> Maybe comparable -> Maybe (Int, Int)
 getValuesKey keysAndVals val =
   Dict.filter (\k v -> v == (Maybe.withDefault 100 val)) keysAndVals |> Dict.keys |> List.head
 
-getMaxValue : Dict comparable comparable -> Maybe comparable
+getMaxValue : Dict (Int, Int) comparable -> Maybe comparable
 getMaxValue scores =
   scores |> Dict.values |> List.maximum
 
-getMinValue : Dict comparable comparable -> Maybe comparable
+getMinValue : Dict (Int, Int) comparable -> Maybe comparable
 getMinValue scores =
   scores |> Dict.values |> List.minimum
 
-minimaxMove : GameState -> number
+minimaxMove : GameState -> Coords
 minimaxMove gameState =
-  -- Temp val
-  8
+  let
+    scores = scoreWholeBoard gameState Dict.empty
+    choice = getMinOrMax scores gameState.activePlayer
+  in
+    toCoordSet(fromJust choice)
 
 flattenBoard : List (List Cell) -> List Cell
 flattenBoard board =
@@ -86,3 +89,13 @@ getEmptySpacesInRow rowTuple =
 indexedElements : List a -> List (Int, a)
 indexedElements inputList =
   List.indexedMap (,) inputList
+
+fromJust : Maybe a -> a
+fromJust x =
+  case x of
+    Just y -> y
+    Nothing -> Debug.crash "error: fromJust Nothing"
+
+toCoordSet : (Int, Int) -> Coords
+toCoordSet tup =
+  {x=(fst tup), y=(snd tup)}

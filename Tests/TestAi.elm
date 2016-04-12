@@ -6,17 +6,6 @@ import DataTypes exposing (..)
 import BoardHelpers exposing (..)
 import Dict exposing (..)
 
-
-nearWinGameState =
-  { board = nearWin,
-    activePlayer = O,
-    inactivePlayer = X }
-
-oneEmptySpaceState =
-  { board = oneEmptySpace,
-    activePlayer = O,
-    inactivePlayer = X }
-
 aiInfrastructureTest : Test
 aiInfrastructureTest =
   suite
@@ -35,27 +24,31 @@ aiInfrastructureTest =
 
   , test
     "selects max scoring cell if currentMarker is computer marker"
-    (assertEqual (Just 0) (getMinOrMax (Dict.fromList testScores) DataTypes.O))
+    (assertEqual (Just (0,0)) (getMinOrMax testScores DataTypes.O))
 
   , test
     "selects min scoring cell if currentMarker is opponent marker"
-    (assertEqual (Just 1) (getMinOrMax (Dict.fromList testScores) DataTypes.X))
+    (assertEqual (Just (0,1)) (getMinOrMax testScores DataTypes.X))
 
   , test
     "getMaxValue gets max"
-    (assertEqual (Just 10) (getMaxValue (Dict.fromList testScores)))
+    (assertEqual (Just 10)
+      (getMaxValue testScores))
 
   , test
     "getMinValue gets max"
-    (assertEqual (Just -10) (getMinValue (Dict.fromList testScores)))
+    (assertEqual (Just -10)
+      (getMinValue testScores))
 
   , test
     "getValuesKey gets the value of its key"
-    (assertEqual (Just 0) (getValuesKey (Dict.fromList testScores) (Just 10)))
+    (assertEqual (Just (0, 1))
+      (getValuesKey testScores (Just -10)))
 
   , test
     "emptySpaces returns empty spaces - nearly full board"
-    (assertEqual [{x=2, y=2}] (getEmptySpacesInBoard(oneEmptySpace)))
+    (assertEqual [{x=2, y=2}]
+      (getEmptySpacesInBoard(oneEmptySpace)))
 
   , test
     "emptySpaces returns empty spaces - nearly empty board"
@@ -66,25 +59,44 @@ aiInfrastructureTest =
 
   , test
     "emptySpacesRow returns empty spaces"
-    (assertEqual [{x=0, y=1}, {x=0, y=2}] (getEmptySpacesInRow((0, [X, Empty, Empty]))))
+    (assertEqual [{x=0, y=1}, {x=0, y=2}]
+      (getEmptySpacesInRow((0, [X, Empty, Empty]))))
 
   , test
     "flatten-board flattens lists"
-    (assertEqual [X, X, O, Empty] (flattenBoard [[X, X], [O, Empty]]))
+    (assertEqual [X, X, O, Empty]
+      (flattenBoard [[X, X], [O, Empty]]))
 
   , test
     "breaks it up be index"
     (assertEqual [(0, "please"), (1, "no")]
       (indexedElements(["please", "no"])))
+
+  , test
+    "fromJust converts numbers"
+    (assertEqual 0
+      (fromJust (Just 0)))
+
+  , test
+    "fromJust converts tuples"
+    (assertEqual (0,0)
+      (fromJust (Just (0,0))))
+
+  , test
+    "converts tuple to coordset"
+    (assertEqual {x=1, y=2}
+      (toCoordSet (1,2)))
   ]
 
 minimaxTest : Test
 minimaxTest =
   suite
   "Test Minimax & Whole-Board-Scoring"
-  [ test
+  [
+    test
     "wins on next move if possible"
-    (assertEqual 8 (minimaxMove nearWinGameState))
+    (assertEqual {x=2, y=2}
+      (minimaxMove nearWinGameState))
 
   , test
     "scores whole board on next move win"
@@ -104,6 +116,15 @@ minimaxTest =
 
   ]
 
+nearWinGameState =
+  { board = nearWin,
+    activePlayer = O,
+    inactivePlayer = X }
+
+oneEmptySpaceState =
+  { board = oneEmptySpace,
+    activePlayer = O,
+    inactivePlayer = X }
 
 multipleChoice : List (List Cell)
 multipleChoice =
@@ -140,3 +161,10 @@ xWinsOnZeroExpectedScore =
 
 oneEmptySpaceExpectedScore =
   Dict.insert (2 // 1, 2 // 1) 10 Dict.empty
+
+testScores =
+  let
+    stepOne = Dict.insert (0,0) 10 Dict.empty
+    stepTwo = Dict.insert (0,1) -10 stepOne
+  in
+    Dict.insert (0,2) 0 stepTwo

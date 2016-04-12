@@ -121,9 +121,6 @@ nextMoveWinsGame =
     winner = Empty
   }
 
-testScores : List ( number, number' )
-testScores = [ ( 0, 10 ), ( 1, -10 ), (2, 0) ]
-
 nearWin : List (List Cell)
 nearWin =
   [ [Empty, Empty,     O]
