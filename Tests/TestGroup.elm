@@ -14,6 +14,6 @@ tests =
     [ TestBoard.boardTests,
       TestGame.gameTests,
       TestDisplay.displayTest,
-      TestAi.aiInfrastructureTest
-      --TestAi.minimaxTest
+      TestAi.aiInfrastructureTest,
+      TestAi.minimaxTest
     ]

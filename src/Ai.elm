@@ -4,7 +4,8 @@ import DataTypes exposing (..)
 import Board exposing (..)
 import Dict exposing (..)
 import Maybe exposing (..)
-import List  exposing (..)
+import List exposing (..)
+import Array exposing (..)
 
 computerMarker : Cell
 computerMarker = DataTypes.O
@@ -20,58 +21,61 @@ getScore board =
     then-10
   else 0
 
-scoreWholeBoard : GameState -> Dict (Int, Int) number -> Dict (Int, Int) number
-scoreWholeBoard gameState scoresSoFar =
-  case getEmptySpacesInBoard(gameState.board) of
-    [] ->
-      Dict.empty
+nextState: GameState -> Coords -> GameState
+nextState gameState move =
+  {board = Board.update gameState move,
+   activePlayer = gameState.inactivePlayer,
+   inactivePlayer = gameState.activePlayer}
 
-    [coordSet] ->
-      let
-        newBoard = Board.update gameState coordSet
-      in
-        Dict.insert (coordSet.x, coordSet.y) (getScore newBoard) scoresSoFar
-
-    coordSet::coordSets ->
-      let
-        newScoresSoFar = Dict.insert (coordSet.x, coordSet.y) (getScore gameState.board) scoresSoFar
-
-        newGameState =
-          { board = Board.update gameState coordSet,
-            activePlayer = gameState.inactivePlayer,
-            inactivePlayer = gameState.activePlayer }
-      in
-        scoreWholeBoard newGameState newScoresSoFar
-
-getMinOrMax : Dict (Int, Int) comparable -> Cell -> Maybe (Int, Int)
-getMinOrMax scores currentMarker =
-  if currentMarker == computerMarker
-    then getValuesKey scores (getMaxValue scores)
-  else getValuesKey scores (getMinValue scores)
-
-getValuesKey : Dict (Int, Int) comparable -> Maybe comparable -> Maybe (Int, Int)
-getValuesKey keysAndVals val =
-  Dict.filter (\k v -> v == (Maybe.withDefault 100 val)) keysAndVals |> Dict.keys |> List.head
-
-getMaxValue : Dict (Int, Int) comparable -> Maybe comparable
-getMaxValue scores =
-  scores |> Dict.values |> List.maximum
-
-getMinValue : Dict (Int, Int) comparable -> Maybe comparable
-getMinValue scores =
-  scores |> Dict.values |> List.minimum
-
-minimaxMove : GameState -> Coords
+minimaxMove : GameState -> Int
 minimaxMove gameState =
-  let
-    scores = scoreWholeBoard gameState Dict.empty
-    choice = getMinOrMax scores gameState.activePlayer
-  in
-    toCoordSet(fromJust choice)
+  if (Board.checkWinner gameState.board) /= Empty then
+    getScore gameState.board
+  else
 
-flattenBoard : List (List Cell) -> List Cell
-flattenBoard board =
-  List.concat(board)
+    let
+      moves      = Array.fromList <| getEmptySpacesInBoard gameState.board
+      nextStates = Array.map (\move -> nextState gameState move) moves
+      scores     = Array.map (\possibleState -> minimaxMove possibleState) nextStates
+
+      chosenMove = Array.get (getMinOrMaxIndex gameState scores) moves
+    in
+      toFlatIndex (fromJust chosenMove)
+
+toFlatIndex : Coords -> Int
+toFlatIndex coord =
+  if coord.x == 0 then
+    coord.y
+  else if coord.x == 1 then
+    coord.y + coord.x + 2
+  else if coord.x == 2 then
+    coord.x + coord.y + 4
+  else
+    Debug.crash "error: Out of bounds index"
+
+getIndexOf : a -> Array a -> Int
+getIndexOf elem coll =
+  let
+    indexedCollection = List.indexedMap (,) (Array.toList coll)
+    searchResults = List.filter (\pair -> (snd pair) == elem) indexedCollection
+    unwrappedResult = fromJust <| List.head searchResults
+  in
+    fst unwrappedResult
+
+getMinOrMaxIndex : GameState -> Array Int -> Int
+getMinOrMaxIndex gameState scores =
+  if gameState.activePlayer == computerMarker then
+    getIndexOf (scores |> getMaxValue) scores
+  else
+    getIndexOf (scores |> getMinValue) scores
+
+getMaxValue : Array comparable -> Int
+getMaxValue scores =
+  fromJust <| List.maximum <| Array.toList scores
+
+getMinValue : Array comparable -> Int
+getMinValue scores =
+  fromJust <| List.minimum <| Array.toList scores
 
 getEmptySpacesInBoard board =
   let

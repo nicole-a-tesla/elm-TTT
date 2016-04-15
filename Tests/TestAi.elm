@@ -5,6 +5,7 @@ import Ai exposing (..)
 import DataTypes exposing (..)
 import BoardHelpers exposing (..)
 import Dict exposing (..)
+import Array exposing (..)
 
 aiInfrastructureTest : Test
 aiInfrastructureTest =
@@ -23,27 +24,24 @@ aiInfrastructureTest =
     (assertEqual 0 (getScore test3x3Board))
 
   , test
-    "selects max scoring cell if currentMarker is computer marker"
-    (assertEqual (Just (0,0)) (getMinOrMax testScores DataTypes.O))
+    "selects max score if currentMarker is computer marker"
+    (assertEqual 2
+      (getMinOrMaxIndex oTurnGameState (Array.fromList [0, 1, 2])))
 
   , test
-    "selects min scoring cell if currentMarker is opponent marker"
-    (assertEqual (Just (0,1)) (getMinOrMax testScores DataTypes.X))
+    "selects min score cell if currentMarker is opponent marker"
+    (assertEqual 0
+      (getMinOrMaxIndex xTurnGameState (Array.fromList [0, 1, 2])))
 
   , test
     "getMaxValue gets max"
-    (assertEqual (Just 10)
-      (getMaxValue testScores))
+    (assertEqual 10
+      (getMaxValue (Array.fromList [0, 5, 10])))
 
   , test
     "getMinValue gets max"
-    (assertEqual (Just -10)
-      (getMinValue testScores))
-
-  , test
-    "getValuesKey gets the value of its key"
-    (assertEqual (Just (0, 1))
-      (getValuesKey testScores (Just -10)))
+    (assertEqual 0
+      (getMinValue (Array.fromList [0, 5, 10])))
 
   , test
     "emptySpaces returns empty spaces - nearly full board"
@@ -63,16 +61,6 @@ aiInfrastructureTest =
       (getEmptySpacesInRow((0, [X, Empty, Empty]))))
 
   , test
-    "flatten-board flattens lists"
-    (assertEqual [X, X, O, Empty]
-      (flattenBoard [[X, X], [O, Empty]]))
-
-  , test
-    "breaks it up be index"
-    (assertEqual [(0, "please"), (1, "no")]
-      (indexedElements(["please", "no"])))
-
-  , test
     "fromJust converts numbers"
     (assertEqual 0
       (fromJust (Just 0)))
@@ -86,7 +74,88 @@ aiInfrastructureTest =
     "converts tuple to coordset"
     (assertEqual {x=1, y=2}
       (toCoordSet (1,2)))
+
+  , test
+    "get index returns middle index"
+    (assertEqual 1
+      (getIndexOf 100 (Array.fromList([10, 100, 0]))))
+
+  , test
+    "get index returns first index if multi matches"
+    (assertEqual 0
+      (getIndexOf 100 (Array.fromList([100, 100, 0]))))
+
+  , test
+    "translates coord to position"
+    (assertEqual (0//1)
+      (toFlatIndex {x=0, y=0}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (1//1)
+      (toFlatIndex {x=0, y=1}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (2//1)
+      (toFlatIndex {x=0, y=2}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (3//1)
+      (toFlatIndex {x=1, y=0}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (4//1)
+      (toFlatIndex {x=1, y=1}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (5//1)
+      (toFlatIndex {x=1, y=2}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (6//1)
+      (toFlatIndex {x=2, y=0}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (7//1)
+      (toFlatIndex {x=2, y=1}))
+
+  , test
+    "translates coord to position"
+    (assertEqual (8//1)
+      (toFlatIndex {x=2, y=2}))
   ]
+
+boardA : List (List Cell)
+boardA =
+  [ [X, O, X]
+  , [O, O, Empty]
+  , [O, X, X]
+  ]
+
+gameAState : GameState
+gameAState =
+  { board = boardA,
+    activePlayer = X,
+    inactivePlayer = O }
+
+boardB : List (List Cell)
+boardB =
+  [ [X, O, X]
+  , [O, O, X]
+  , [O, X, X]
+  ]
+
+gameBState : GameState
+gameBState =
+  { board = boardB,
+    activePlayer = O,
+    inactivePlayer = X }
 
 minimaxTest : Test
 minimaxTest =
@@ -94,27 +163,90 @@ minimaxTest =
   "Test Minimax & Whole-Board-Scoring"
   [
     test
-    "wins on next move if possible"
-    (assertEqual {x=2, y=2}
+    "nextState correct board"
+    (assertEqual gameBState
+      (nextState gameAState {x=1, y=2}))
+
+  , test
+    "chooses winning move from one choice"
+    (assertEqual 8
+      (minimaxMove oneEmptySpaceState))
+
+  , test
+    "chooses winning move from board with many empty spaces"
+    (assertEqual 8
       (minimaxMove nearWinGameState))
 
   , test
-    "scores whole board on next move win"
-    (assertEqual oneEmptySpaceExpectedScore
-      (scoreWholeBoard oneEmptySpaceState Dict.empty))
+    "selects losing move if that's all there is"
+    (assertEqual 0
+      (minimaxMove xWinsOnZeroState))
 
   , test
-    "scores whole board on next move loss"
-    (assertEqual xWinsOnZeroExpectedScore
-      (scoreWholeBoard xWinsOnZeroState Dict.empty))
+    "blocks opponent if no winning move"
+    (assertEqual 2
+      (minimaxMove blockingBoardGameState))
 
   , test
-    "scores whole board with many empty spaces"
-    (assertEqual multipleChoiceExpectedScore
-      (scoreWholeBoard multipleChoiceState
-        multipleChoiceExpectedScore))
+    "takes winning move over block if available"
+    (assertEqual 8
+      (minimaxMove blockOrWinGameState))
 
   ]
+
+oTurnGameState : GameState
+oTurnGameState =
+  { board = blockingBoard,
+    activePlayer = O,
+    inactivePlayer = X }
+
+xTurnGameState : GameState
+xTurnGameState =
+  { board = blockingBoard,
+    activePlayer = X,
+    inactivePlayer = O }
+
+blockOrWin : List (List Cell)
+blockOrWin =
+  [ [X,     X,     Empty]
+  , [Empty, Empty, Empty]
+  , [O,     O,     Empty]
+  ]
+
+blockOrWinGameState =
+  {board = blockOrWin,
+   activePlayer = O,
+   inactivePlayer = X}
+
+blockingBoard : List (List Cell)
+blockingBoard =
+  [ [X,     X,     Empty]
+  , [Empty, Empty, Empty]
+  , [O,     Empty, Empty]
+  ]
+
+blockingBoardGameState =
+  {board = blockingBoard,
+   activePlayer = O,
+   inactivePlayer = X}
+
+threeEmptyOneWin : List (List Cell)
+threeEmptyOneWin =
+  [ [X, Empty,     O]
+  , [O, Empty, Empty]
+  , [O, X,         X]
+  ]
+
+threeEmptyOneWinGameState =
+  {board = threeEmptyOneWin,
+   activePlayer = O,
+   inactivePlayer = X}
+
+threeEmptyOneWinExpected =
+  Dict.insert (0//1, 1//1) 0
+    (Dict.insert (1//1, 1//1) 10
+      (Dict.insert (1//1, 2//1) 0
+        Dict.empty))
 
 nearWinGameState =
   { board = nearWin,
@@ -138,10 +270,15 @@ multipleChoiceState =
     activePlayer = O,
     inactivePlayer = X }
 
-multipleChoiceExpectedScore =
-  Dict.insert (2//1, 0//1) 10
-    (Dict.insert (1 // 1, 0 // 1) 0
-      Dict.empty)
+nearWinExpectedScores =
+  Dict.insert (0//1, 0//1) 0
+    (Dict.insert (0//1, 1//1) 0
+      (Dict.insert (1//1, 0//1) 0
+        (Dict.insert (1//1, 1//1) 0
+          (Dict.insert (2//1, 0//1) 0
+            (Dict.insert (2//1, 1//1) 0
+              (Dict.insert (2//1, 2//1) 10
+      Dict.empty))))))
 
 
 xWinsOnZero : List (List Cell)
