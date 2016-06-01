@@ -10,9 +10,6 @@ gameTests =
   suite
     "Test for game functions"
     [ test
-        "== tests for equality"
-        (assert (2 == 2))
-    , test
         "Test that startgame winner is Empty"
         (assertEqual startGame.winner Empty)
     , test
@@ -26,11 +23,11 @@ gameTests =
         (assertEqual [[X, Empty, Empty],
                       [Empty, Empty, Empty]
                      ,[Empty, Empty, Empty]]
-                     (Game.update (Move 0 0) testGame).board )
+                     (Game.update (Move 0 0) (getOActiveStateFor empty3x3Board)).board )
     , test
         "Test that Game updates winner on winning move"
-        (assertEqual X (Game.update (Move 0 0) nextMoveWinsGame).winner)
+        (assertEqual X (Game.update (Move 0 0) (getOActiveStateFor test3x3Board)).winner)
     , test
         "Test that Game does not update on NoOp action"
-        (assertEqual empty3x3Board (Game.update (NoOp) testGame).board)
+        (assertEqual empty3x3Board (Game.update (NoOp) (getOActiveStateFor empty3x3Board)).board)
     ]
