@@ -8,7 +8,8 @@ import BoardHelpers exposing (..)
 testGameState =
     {board = [[Empty, Empty],[Empty, Empty]],
      activePlayer = X,
-     inactivePlayer = O}
+     inactivePlayer = O,
+     winner = Empty}
 
 testCoords =
     {x = 0,
