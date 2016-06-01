@@ -1,6 +1,19 @@
 module BoardHelpers (..) where
-
 import DataTypes exposing (..)
+
+getOActiveStateFor : List (List Cell) -> GameState
+getOActiveStateFor board =
+  { board = board,
+    activePlayer = O,
+    inactivePlayer = X,
+    winner = Empty }
+
+getXActiveStateFor : List (List Cell) -> GameState
+getXActiveStateFor board =
+  { board = board,
+    activePlayer = X,
+    inactivePlayer = O,
+    winner = Empty }
 
 empty3x3Board : List (List Cell)
 empty3x3Board =
@@ -107,24 +120,10 @@ all4x4Lists =
   , [Empty, Empty,     X, O]
   ]
 
-testGame : Game
-testGame =
-  {
-    board = empty3x3Board,
-    winner = Empty
-  }
-
-nextMoveWinsGame : Game
-nextMoveWinsGame =
-  {
-    board = test3x3Board,
-    winner = Empty
-  }
-
 nearWin : List (List Cell)
 nearWin =
-  [ [Empty, Empty,     O]
-  , [Empty, Empty,     O]
+  [ [Empty,     X,     O]
+  , [    X, Empty,     O]
   , [Empty, Empty, Empty]
   ]
 
