@@ -21,5 +21,5 @@ type Player
   = Human
   | Computer
 
-type Action = NoOp | Move Int Int | ComputerMove
+type Action = NoOp | BothMoves Int Int
 

@@ -22,7 +22,7 @@ cellStyle =
     , ("background", "white")
     , ("border", "2px solid #4A4A4A")]
 
-computerMoveButtonStyle: Attribute
+computerMoveButtonStyle : Attribute
 computerMoveButtonStyle =
     style
     [("margin", "10px")
@@ -51,30 +51,21 @@ buildWinnerString cell =
     Empty -> ""
     _ -> (toString cell) ++ " Wins"
 
-takeTurn: Int -> Action
-takeTurn index =
-    (Move (index//boardSize)(index % boardSize))
-
-takeComputerTurn: Action
-takeComputerTurn =
-  (ComputerMove)
+takeBothTurns : Int -> Action
+takeBothTurns index =
+    (BothMoves (index//boardSize)(index % boardSize))
 
 createCellButton : Int -> Cell -> Html
 createCellButton index cell =
   let
     content = convertCellToString index cell
   in
-  button [cellStyle, onClick actions.address (takeTurn index)] [text content]
-
-buildComputerMoveButton: GameState -> Html
-buildComputerMoveButton gameState =
-  button [computerMoveButtonStyle, onClick actions.address (takeComputerTurn)] [text "Make Computer Move"]
+    button [cellStyle, onClick actions.address (takeBothTurns index)] [text content]
 
 view : Address Action -> GameState -> Html
 view address game =
   div [] [
     h1 [header] [ text "Welcome to Tic Tac Toe"],
-    (buildComputerMoveButton game),
     div [] (List.indexedMap createCellButton (List.concat game.board)),
     h1 [header] [text (buildWinnerString game.winner)]
   ]

@@ -12,22 +12,34 @@ gameTests =
     [ test
         "Test that startgame winner is Empty"
         (assertEqual startGame.winner Empty)
+
     , test
         "Test that startgame has a new blank board"
-        (assertEqual startGame.board [  [Empty, Empty, Empty]
-                                      , [Empty, Empty, Empty]
-                                      , [Empty, Empty, Empty]
-                                      ])
+        (assertEqual startGame.board testBoardEmpty)
+
     , test
-        "Test that Game updates board on Move action"
-        (assertEqual [[X, Empty, Empty],
-                      [Empty, Empty, Empty]
-                     ,[Empty, Empty, Empty]]
-                     (Game.update (Move 0 0) (getOActiveStateFor empty3x3Board)).board )
+        "Test that state is correctly updated on humanPlayerMove"
+        (assertEqual (getXActiveStateFor testBoardA)
+                     (humanPlayerMove (getXActiveStateFor testBoardEmpty) 0 0))
+
     , test
-        "Test that Game updates winner on winning move"
-        (assertEqual X (Game.update (Move 0 0) (getOActiveStateFor test3x3Board)).winner)
+        "Test that winner is updated on winning move"
+        (assertEqual X (humanPlayerMove (getXActiveStateFor test3x3Board) 0 0).winner)
+
     , test
         "Test that Game does not update on NoOp action"
         (assertEqual empty3x3Board (Game.update (NoOp) (getOActiveStateFor empty3x3Board)).board)
     ]
+
+testBoardEmpty : List (List Cell)
+testBoardEmpty = 
+     [[Empty, Empty, Empty],
+     [Empty, Empty, Empty],
+     [Empty, Empty, Empty]]
+
+testBoardA : List (List Cell)
+testBoardA =
+    [[X, Empty, Empty], 
+     [Empty, Empty, Empty],
+     [Empty, Empty, Empty]]
+

@@ -31,17 +31,26 @@ update : Action -> GameState -> GameState
 update action gameState =
   case action of
     NoOp -> gameState
-    ComputerMove ->
-      let
-        nextTurnState = (setPlayerToO gameState)
-        nextMove      = (minimaxMove nextTurnState)
-      in
-        (updateGameBoard nextTurnState (fromFlatIndex nextMove)) |> updateWinnerStatus
-    Move row column ->
-      let
-        nextTurnState = (setPlayerToX gameState)
-      in
-        updateGameBoard nextTurnState (toCoords row column) |> updateWinnerStatus
+    BothMoves row column -> 
+        let
+          postHumanMoveState = (humanPlayerMove gameState row column)
+        in 
+          computerPlayerMove postHumanMoveState
+
+humanPlayerMove : GameState -> Int -> Int -> GameState
+humanPlayerMove gameState row column =
+    let
+      nextTurnState = (setPlayerToX gameState)
+    in 
+      updateGameBoard nextTurnState (toCoords row column) |> updateWinnerStatus
+
+computerPlayerMove : GameState -> GameState
+computerPlayerMove gameState =
+    let
+      nextTurnState = (setPlayerToO gameState)
+      nextMove = (minimaxMove nextTurnState)
+    in 
+      updateGameBoard nextTurnState (fromFlatIndex nextMove) |> updateWinnerStatus
 
 toCoords : Int -> Int -> Coords
 toCoords row column =
